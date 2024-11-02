@@ -4,6 +4,7 @@ on:
   schedule:
     # Run every weekday (Monday through Friday) at 7:00 AM US Eastern Time
     - cron: "0 11 * * 1-5"  # UTC time for 7:00 AM ET on weekdays
+  workflow_dispatch:  # Allows manual trigger for testing
 
 jobs:
   run-script:
@@ -27,4 +28,4 @@ jobs:
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-        run: python astropy_scraping.py
+        run: python arxiv_script.py
