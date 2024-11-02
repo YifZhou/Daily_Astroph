@@ -24,14 +24,12 @@ planet_papers = []
 
 # Loop through entries and titles_ids together to extract details
 for entry, title_id in zip(entries, titles_ids):
-    # Extract the paper ID link in the correct format
-    print(title_id.text)
+    # Extract the paper ID link in the correct format    
     if "(replaced)" in title_id.text:
         continue  # Skip this entry as it is a replacement
 
     paper_id_link = title_id.find('a', title="Abstract")['href']
     paper_id = paper_id_link.split('/')[-1]
-    print(paper_id)
     paper_url = f"https://arxiv.org/abs/{paper_id}"
     pdf_url = f"https://arxiv.org/pdf/{paper_id}.pdf"
     
@@ -42,30 +40,45 @@ for entry, title_id in zip(entries, titles_ids):
     # Check if 'planet' is in the title or abstract (case-insensitive)
     if 'planet' in title.lower() or 'planet' in abstract.lower():
         authors = entry.find('div', class_='list-authors').get_text(strip=True).replace('Authors:', '').strip()
-        
+        authorList = authors.split(',')
+        if len(authorList) > 3:
+            authors = ', '.join(authorList[:3]) + ' et al.'
+        else:
+            authors = ', '.join(authorList)
         # Collect relevant paper information
         paper_info = {
             'title': title,
             'authors': authors,
             'abstract': abstract,
             'url': paper_url,
-            'PDF': pdf_url
+            'pdf_url': pdf_url
         }
         planet_papers.append(paper_info)
 
 # Get the count of new papers
 num_papers = len(planet_papers)
 
-# Construct the HTML email content
-email_content = "New Planet-Related Papers on arXiv (astro-ph)\n\n"
-for paper in planet_papers:
-    email_content += f"Title: {paper['title']}\n\n"
-    email_content += f"Authors: {paper['authors']}\n\n"
-    email_content += f"Abstract: {paper['abstract']}\n\n"
-    email_content += f"URL: {paper['url']}\n"
-    email_content += f"PDF: {paper['PDF']}"
-    email_content += "\n" + "-"*80 + "\n\n"
+email_content = """
+<html>
+<body>
+  <h2>New Planet-Related Papers on arXiv (astro-ph)</h2>
+"""
 
+for paper in planet_papers:
+    email_content += f"""
+    <hr>
+    <p><strong>Title:</strong> {paper['title']}</p>
+    <p><strong>Authors:</strong> {paper['authors']}</p>
+    <p><strong>Abstract:</strong> {paper['abstract']}</p>
+    <p><strong> <a href="{paper['url']}">[URL]</a> </strong>
+    <strong> <a href="{paper['pdf_url']}">[PDF]</a> </strong> </p>
+    <br>
+    """
+
+email_content += """
+</body>
+</html>
+"""
 
 # Set up the email parameters
 email_user = os.getenv("EMAIL_USER")
@@ -75,11 +88,11 @@ to_email = "uyr2ce@virginia.edu"
 subject = f"New Planet-Related Papers on arXiv (astro-ph): {num_papers} New Papers"
 
 # Create the email
-msg = MIMEMultipart()
+msg = MIMEMultipart("alternative")
 msg['From'] = from_email
 msg['To'] = to_email
 msg['Subject'] = subject
-msg.attach(MIMEText(email_content, 'plain'))
+msg.attach(MIMEText(email_content, 'html'))
 
 # Send the email securely using environment variables
 try:
