@@ -42,7 +42,7 @@ for entry, title_id in zip(entries, titles_ids):
         authors = entry.find('div', class_='list-authors').get_text(strip=True).replace('Authors:', '').strip()
         authorList = authors.split(',')
         if len(authorList) > 3:
-            authors = ', '.join(authorList[:3]) + ' et al.'
+            authors = ', '.join(authorList[:3]) + ', et al.'
         else:
             authors = ', '.join(authorList)
         # Collect relevant paper information
