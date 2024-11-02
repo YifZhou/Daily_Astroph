@@ -71,10 +71,6 @@ for paper in planet_papers:
     podcast_content.append((paper['title'], paper['abstract']))
 
 
-client = OpenAI(
-    # This is the default and can be omitted
-    api_key="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",
-)
 
 
 # Configure OpenAI API key
