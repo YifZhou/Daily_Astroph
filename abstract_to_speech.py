@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
     
-import openai
+from openai import OpenAI
 import pyttsx3
 
 # URL of the new submissions page for astro-ph
@@ -65,45 +65,51 @@ email_content = """
 <html>
 <body>
 """
+podcast_content = []
 
 for paper in planet_papers:
-    email_content += f"""
-    <p><strong>Title:</strong> {paper['title']}</p>
-    <p><strong>Authors:</strong> {paper['authors']}</p>
-    <p><strong>Abstract:</strong> {paper['abstract']}</p>
-    <p><strong> <a href="{paper['url']}">[URL]</a> </strong>
-    <strong> <a href="{paper['pdf_url']}">[PDF]</a> </strong> </p>
-    <br>
-    <hr>
-    """
+    podcast_content.append((paper['title'], paper['abstract']))
 
-email_content += """
-</body>
-</html>
-"""
 
-# Set up the email parameters
-email_user = os.getenv("EMAIL_USER")
-email_pass = os.getenv("EMAIL_PASS")  # 'ucer hkau wvic paoc'
-from_email = email_user
-to_email = "uyr2ce@virginia.edu"
-subject = f"New Planet-Related Papers on arXiv (astro-ph): {num_papers} New Papers"
+client = OpenAI(
+    # This is the default and can be omitted
+    api_key="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",
+)
 
-# Create the email
-msg = MIMEMultipart("alternative")
-msg['From'] = from_email
-msg['To'] = to_email
-msg['Subject'] = subject
-msg.attach(MIMEText(email_content, 'html'))
 
-# Send the email securely using environment variables
-try:
-    # Establish a secure session with Gmail's outgoing SMTP server using your Gmail account
-    with smtplib.SMTP("smtp.gmail.com", 587) as server:
-        server.starttls()  # Enable security
-        server.login(from_email, email_pass)  # Log in using environment variable-stored credentials
-        server.sendmail(from_email, to_email, msg.as_string())
-        print("Email sent successfully.")
-except Exception as e:
-    print(f"Error sending email: {e}")
+# Configure OpenAI API key
 
+
+def generate_podcast_script(abstracts):
+    # Step 1: Combine abstracts into a coherent, conversational podcast-style script
+    prompt = (
+        "You're a podcast host. Take the following scientific paper abstracts and "
+        "turn them into a coherent, engaging script for a podcast episode. "
+        "Make it conversational and accessible, tying the abstracts together smoothly.\n\n"
+    )
+    for i, abstract in enumerate(abstracts, 1):
+        prompt += f"title:{abstract[0]}\n{abstract[1]}\n\n"
+
+    
+    return prompt
+
+def convert_script_to_speech(script):
+    # Initialize the pyttsx3 engine
+    engine = pyttsx3.init()
+    engine.setProperty("rate", 150)  # Set speaking rate
+    engine.setProperty("volume", 1)  # Set volume level
+
+    # Generate speech from script
+    engine.say(script)
+    engine.save_to_file(script, "podcast_episode.mp3")  # Save as mp3 file
+    engine.runAndWait()
+    print("Podcast episode audio generated as 'podcast_episode.mp3'.")
+
+# Sample abstracts - Replace these with actual abstracts extracted from arXiv
+
+# Generate the podcast script
+podcast_script = generate_podcast_script(podcast_content)
+print("Generated Podcast Script:\n", podcast_script)
+
+# Convert the script to speech
+# convert_script_to_speech(podcast_script)
