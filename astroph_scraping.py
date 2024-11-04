@@ -65,10 +65,9 @@ email_content = """
 
 for paper in planet_papers:
     email_content += f"""
-    <p><strong>Title:</strong> {paper['title']}</p>
+    <p><strong>Title:</strong> <a href="{paper['url']}">{paper['title']}</a> </p>
     <p><strong>Authors:</strong> {paper['authors']}</p>
-    <p><strong>Abstract:</strong> {paper['abstract']}</p>
-    <p><strong> <a href="{paper['url']}">[URL]</a> </strong>
+    <p><strong>Abstract:</strong> {paper['abstract']}</p>    
     <strong> <a href="{paper['pdf_url']}">[PDF]</a> </strong> </p>
     <br>
     <hr>
