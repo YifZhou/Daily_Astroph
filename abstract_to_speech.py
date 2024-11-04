@@ -25,6 +25,8 @@ titles_ids = soup.find_all('dt')
 planet_papers = []
 
 
+
+
 # Loop through entries and titles_ids together to extract details
 for entry, title_id in zip(entries, titles_ids):
     # Extract the paper ID link in the correct format    
