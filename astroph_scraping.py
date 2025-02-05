@@ -156,7 +156,8 @@ msg = MIMEMultipart("alternative")
 msg['From'] = from_email
 msg['To'] = to_email
 if receiptients is not None:
-    msg['Bcc'] = receiptients.split(',')
+    receiptientsList = receiptients.split(',')
+    msg['Bcc'] = ', '.join(receiptientsList)
 msg['Subject'] = subject
 msg.attach(MIMEText(email_content, 'html'))
 
@@ -168,7 +169,7 @@ try:
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
         server.starttls()  # Enable security
         server.login(from_email, email_pass)  # Log in using environment variable-stored credentials
-        server.sendmail(from_email, to_email, msg.as_string())
+        server.sendmail(from_email, [to_email] + receiptientsList, msg.as_string())
         print("Email sent successfully.")
 except Exception as e:
     print(f"Error sending email: {e}")
