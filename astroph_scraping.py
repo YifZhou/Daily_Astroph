@@ -74,7 +74,7 @@ import requests
 import time
 
 # Replace with your DeepSeek API key
-API_KEY = os.getenv("Deepseek_API")  #
+API_KEY = os.getenv("DeepSeek_API")  #
 
 # DeepSeek API endpoint for summarization (replace with the actual endpoint)
 API_URL = 'https://api.deepseek.com/chat/completions'
