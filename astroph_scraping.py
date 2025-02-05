@@ -146,6 +146,7 @@ email_content += """
 # Set up the email parameters
 email_user = os.getenv("EMAIL_USER")
 email_pass = os.getenv("EMAIL_PASS")  # 'ucer hkau wvic paoc'
+receiptients = os.getenv("RECEIPIENTS")
 from_email = email_user
 to_email = "uyr2ce@virginia.edu"
 subject = f"New Planet-Related Papers on arXiv (astro-ph): {num_papers} New Papers"
@@ -154,6 +155,8 @@ subject = f"New Planet-Related Papers on arXiv (astro-ph): {num_papers} New Pape
 msg = MIMEMultipart("alternative")
 msg['From'] = from_email
 msg['To'] = to_email
+if receiptients is not None:
+    msg['Bcc'] = receiptients.split(',')
 msg['Subject'] = subject
 msg.attach(MIMEText(email_content, 'html'))
 

@@ -29,4 +29,5 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
           DeepSeek_API: ${{ secrets.DEEPSEEK_API }}
+          RECEIPIENTS: ${{ secrets.RECEIPIENTS }}
         run: python astroph_scraping.py
