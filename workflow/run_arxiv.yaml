@@ -28,4 +28,5 @@ jobs:
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          DeepSeek_API: ${{ secrets.DEEPSEEK_API }}
         run: python arxiv_script.py
