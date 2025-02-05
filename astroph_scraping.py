@@ -38,7 +38,10 @@ for entry, title_id in zip(entries, titles_ids):
     abstract = entry.find('p', class_='mathjax').get_text(strip=True)
     
     # Check if 'planet' is in the title or abstract (case-insensitive)
-    if 'planet' in title.lower() or 'planet' in abstract.lower():
+    if ('planet' in title.lower())\
+          or ('planet' in abstract.lower())\
+              and (not 'planetary nebula' in title.lower())\
+                  and (not 'planetary nebula' in abstract.lower()):
         authors = entry.find('div', class_='list-authors').get_text(strip=True).replace('Authors:', '').strip()
         authorList = authors.split(',')
         if len(authorList) > 3:
@@ -58,13 +61,73 @@ for entry, title_id in zip(entries, titles_ids):
 # Get the count of new papers
 num_papers = len(planet_papers)
 
-email_content = """
+abstractList = []
+
+for paper in planet_papers:
+    abstractDict_i = {'title': paper['title'], 'authors': paper['authors'], 'abstract': paper['abstract']}
+    abstractList.append(abstractDict_i)
+
+
+# Doing some DeepSeek Shit
+
+import requests
+import time
+
+# Replace with your DeepSeek API key
+API_KEY = os.getenv("Deepseek_API")  #
+
+# DeepSeek API endpoint for summarization (replace with the actual endpoint)
+API_URL = 'https://api.deepseek.com/chat/completions'
+
+# Headers for the API request
+headers = {
+    'Authorization': f'Bearer {API_KEY}',
+    'Content-Type': 'application/json'
+}
+
+def summarize_abstract(papers):
+    """
+    Sends the abstract to the DeepSeek API for summarization.
+    """
+    # combine papers into a string
+    inputContent = ''
+    for i, paper in enumerate(papers):
+        title_i = paper['title']
+        abstract_i = paper['abstract']
+        paperString = f"title {i+1:d}: {title_i}" + '\n' + f"abstract: {abstract_i}"
+        inputContent += paperString + '\n_\n'
+    payload = {
+    'model': 'deepseek-chat',  # Specify the model
+    'messages': [
+        {'role': 'system', 'content': 'You are a helpful assistant.'},
+        {'role': 'user', 'content': f'Make a concise summary of the following list of abstracts into a morning report about recent development in exoplanet research. It should be one coherent paragraph. Be concise, light-hearted, and fun. Abstract: {inputContent}'}]}
+    
+    try:
+        response = requests.post(API_URL, headers=headers, json=payload)
+        response.raise_for_status()  # Raise an error for bad status codes
+        result = response.json()
+        # Extract the assistant's reply from the response
+        return result['choices'][0]['message']['content']
+    except requests.exceptions.RequestException as e:
+        print(f"Error summarizing abstract: {e}")
+        print("Status Code:", response.status_code)
+        print("Response:", response.text)
+        return None
+    
+
+
+summary = summarize_abstract(abstractList)
+
+email_content = f"""
 <html>
 <body>
+<p>Good morning! ☕ Here's your daily dose of science with a smile:</p>
+<p>{summary}</p>
+<p>Here are the latest planet-related papers on arXiv:</p>
 """
 
 for paper in planet_papers:
-    email_content += f"""
+    email_content += f"""    
     <p><strong>Title:</strong> <a href="{paper['url']}">{paper['title']}</a> </p>
     <p><strong>Authors:</strong> {paper['authors']}</p>
     <p><strong>Abstract:</strong> {paper['abstract']}</p>    
@@ -72,6 +135,8 @@ for paper in planet_papers:
     <br>
     <hr>
     """
+    abstractDict_i = {'title': paper['title'], 'authors': paper['authors'], 'abstract': paper['abstract']}
+    abstractList.append(abstractDict_i)
 
 email_content += """
 </body>
@@ -92,7 +157,9 @@ msg['To'] = to_email
 msg['Subject'] = subject
 msg.attach(MIMEText(email_content, 'html'))
 
-# Send the email securely using environment variables
+
+
+
 try:
     # Establish a secure session with Gmail's outgoing SMTP server using your Gmail account
     with smtplib.SMTP("smtp.gmail.com", 587) as server:
@@ -102,4 +169,5 @@ try:
         print("Email sent successfully.")
 except Exception as e:
     print(f"Error sending email: {e}")
+
 
