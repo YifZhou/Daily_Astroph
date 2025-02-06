@@ -85,7 +85,7 @@ headers = {
     'Content-Type': 'application/json'
 }
 
-def summarize_abstract(papers):
+def summarize_abstract(papers, maxTry=10):
     """
     Sends the abstract to the DeepSeek API for summarization.
     """
@@ -101,19 +101,21 @@ def summarize_abstract(papers):
     'messages': [
         {'role': 'system', 'content': 'You are a helpful assistant.'},
         {'role': 'user', 'content': f'Make a concise summary of the following list of abstracts into a morning report about recent development in exoplanet research. It should be one coherent paragraph. Be concise, light-hearted, and fun. Abstract: {inputContent}'}]}
-    
-    try:
-        response = requests.post(API_URL, headers=headers, json=payload)
-        response.raise_for_status()  # Raise an error for bad status codes
-        result = response.json()
-        # Extract the assistant's reply from the response
-        return result['choices'][0]['message']['content']
-    except requests.exceptions.RequestException as e:
-        print(f"Error summarizing abstract: {e}")
-        print("Status Code:", response.status_code)
-        print("Response:", response.text)
-        return None
-    
+    nTry = 0
+    while nTry < maxTry:
+        try:
+            response = requests.post(API_URL, headers=headers, json=payload)
+            response.raise_for_status()  # Raise an error for bad status codes
+            result = response.json()
+            # Extract the assistant's reply from the response
+            return result['choices'][0]['message']['content']
+        except requests.exceptions.RequestException as e:
+            print(f"Error summarizing abstract: {e}")
+            print("Status Code:", response.status_code)
+            print("Response:", response.text)
+            nTry += 1
+            time.sleep(1)
+    return None    
 
 
 summary = summarize_abstract(abstractList)
