@@ -85,7 +85,7 @@ headers = {
     'Content-Type': 'application/json'
 }
 
-def summarize_abstract(papers, maxTry=10):
+def summarize_abstract(papers, maxTry=60):
     """
     Sends the abstract to the DeepSeek API for summarization.
     """
@@ -114,7 +114,8 @@ def summarize_abstract(papers, maxTry=10):
             print("Status Code:", response.status_code)
             print("Response:", response.text)
             nTry += 1
-            time.sleep(1)
+            print(inputContent)
+            time.sleep(10)
     return None    
 
 
