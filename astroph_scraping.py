@@ -159,7 +159,7 @@ msg['From'] = from_email
 msg['To'] = to_email
 if receiptients is not None:
     receiptientsList = receiptients.split(',')
-    msg['Bcc'] = ', '.join(receiptientsList)
+    #msg['Bcc'] = ', '.join(receiptientsList)
 msg['Subject'] = subject
 msg.attach(MIMEText(email_content, 'html'))
 
