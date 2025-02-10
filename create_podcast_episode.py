@@ -123,14 +123,7 @@ if __name__ == "__main__":
         files.sort()
         latest_file = files[-1]
         main_audio_path = f'./voice_output/{latest_file}'
-    music_path = random.choice([
-        "./music/Top Of The Morning - TrackTribe.mp3",
-        "./music/Cosmos - Silent Partner.mp3",
-        "./music/Night Falls - Everet Almond.mp3",
-        "./music/Space Walk - Silent Partner.mp3",
-        "./music/Saving the World - Aaron Kenny.mp3",
-        "./music/Morning - Evening Telecast.mp3"
-    ])
+    music_path = './music/Top Of The Morning - TrackTribe.mp3'
     print(music_path)
     create_episode_with_dynamic_music(
         main_audio_path=main_audio_path,

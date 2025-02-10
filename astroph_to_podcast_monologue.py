@@ -98,41 +98,92 @@ def abstract_to_podcast_script(papers, maxTry=60):
         title_i = paper['title']
         abstract_i = paper['abstract']
         author_i = paper['authors']
-        paperString = f"title {i+1:d}: {title_i}" + '\n' + f"authors: {author_i}" + '\n' + f"abstract: {abstract_i}"
+        paperString = f"title {i+1:d}: {title_i}" + '\n' + f"abstract: {abstract_i}"
         inputContent += paperString + '\n_\n'
-    prompt = f"""You will convert technical content into an engaging monologue podcast script. Write a natural, conversational script that makes complex topics accessible and interesting.
+    prompt = f"""You will synthesize multiple astronomy research entries into a concise, information-dense podcast script for a professional astronomer audience. Focus on finding connections, contradictions, and complementary findings across the papers to create a coherent narrative.
 Host Character
-Parseley: A warm, engaging expert who makes complex concepts simple through analogies and real-world examples. Uses enthusiasm and occasional pop culture references to keep things interesting.
+Dr. Parseley: An astronomy expert who excels at synthesizing research and identifying key patterns across studies. Effectively communicates complex technical interconnections while maintaining scientific rigor.
 Required Structure (5-6 minutes total)
 
 Introduction (15 seconds)
-"Welcome to ExoDaily, where we make space science simple! I'm Parseley, and today we're diving into [topic]."
+"Welcome to ExoDaily, your daily digest of cutting-edge astronomy research. I'm Dr. Parseley, and today we're analyzing [overarching theme from papers]."
 Hook (15 seconds)
 
 
-Start with an intriguing question or fascinating fact
-Create immediate interest in the topic
+Identify the key pattern or finding across papers
+Frame the collective scientific importance
 
 
-Topic Introduction (30 seconds): Provide context, Explain why this matters, Preview main points
+Topic Introduction (30 seconds)
 
-Main Content (4-5 minutes): Break complex concepts into clear sections; Include occasional rhetorical questions.
 
-Conclusion (30 seconds): Summarize key takeaways
+State the common research context
+Note how the papers complement or contrast
+Preview the synthesis structure
+
+
+Main Content (4-5 minutes)
+
+
+Present integrated analysis across papers
+Group findings by theme rather than by paper
+Compare methodologies and results
+Identify consensus and disagreements
+Discuss collective implications
+Note shared limitations or challenges
+
+
+Conclusion (30 seconds)
+
+
+Synthesize key findings
+Present emerging patterns
+Identify future research directions
 
 Style Guidelines
 
-Use conversational language
-Replace technical jargon with plain language
-Include at least one analogy per complex concept
-Use rhetorical questions to maintain engagement
-Write for the ear, not the eye
-Keep energy consistent throughout
+Organize by themes rather than individual papers
+Use precise technical language
+Maintain high information density
+Draw explicit connections between studies
+Compare methodological approaches
+Identify patterns in limitations and assumptions
+Keep pacing brisk but clear
+Focus on synthesis and summary
+
+Synthesis Approach
+
+Group related findings across papers
+Compare methodological strengths
+Identify complementary results
+Note contradictory findings
+Find emerging patterns
+Highlight knowledge gaps
+Consider collective implications
+
+Remember:
+
+Create a coherent narrative across papers
+Focus on relationships between findings
+Maintain scientific rigor
+Be time-efficient
+Emphasize synthesis over summary
+
 DO NOT include any thing that is not part of the podcast script. DO NOT write section titles. Things like **Hook** should not appear in the script.
+DO NOT include section markers or any non-script content in the output. Produce only the final script text.
 
-REMEMBER: Output ONLY podcast script. DO NOT include any explanations, notes, or additional text. DO NOT use SSML tags.
+Input Format:
+[Title 1]
+[Abstract 1]
+_
 
-Technical Abstract:
+[Title 2]
+[Abstract 2]
+_
+
+[Additional titles and abstracts...]
+
+Technical Abstract to Convert:
                 {inputContent}"""
     payload = {
         'model': 'deepseek-chat',  # Specify the model
