@@ -128,8 +128,9 @@ Include at least one analogy per complex concept
 Use rhetorical questions to maintain engagement
 Write for the ear, not the eye
 Keep energy consistent throughout
+DO NOT include any thing that is not part of the podcast script. DO NOT write section titles. Things like **Hook** should not appear in the script.
 
-REMEMBER: Output ONLY podcast script. Do not include any explanations, notes, or additional text. Do not use SSML tags.
+REMEMBER: Output ONLY podcast script. DO NOT include any explanations, notes, or additional text. DO NOT use SSML tags.
 
 Technical Abstract:
                 {inputContent}"""
@@ -163,9 +164,9 @@ print("podcast script ready")
 with open(f'./script_output/podcast_monologue_{date}.txt', 'w') as f:
     f.write(summary)
 
-""" summary_file = './script_output/podcast_script_2025-02-08.txt'
-with open(summary_file, 'r') as f:
-    summary = f.read() """
+# summary_file = './script_output/podcast_monologue_2025-02-09.txt'
+# with open(summary_file, 'r') as f:
+#     summary = f.read()
 
 # convert the summary into speech
 from text_to_speech import text_to_speech_long, combine_audio_files

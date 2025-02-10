@@ -91,6 +91,88 @@ def split_ssml_script(ssml_text, max_chars=4800):
     
     return segments
 
+def split_text_into_segments(text: str, max_length: int = 4800) -> list[str]:
+    """
+    Split text into segments using empty lines as natural break points.
+    Each segment will be no longer than max_length characters.
+    
+    Args:
+        text (str): The input text to be split
+        max_length (int): Maximum length for each segment (default: 4800)
+        
+    Returns:
+        list[str]: List of text segments
+    """
+    # Split the text into paragraphs using empty lines
+    paragraphs = [p.strip() for p in text.split('\n\n')]
+    
+    segments = []
+    current_segment = ''
+    
+    for paragraph in paragraphs:
+        # Check if adding this paragraph would exceed the limit
+        potential_segment = f"{current_segment}\n\n{paragraph}" if current_segment else paragraph
+        
+        if len(potential_segment) > max_length and current_segment:
+            # Store current segment and start a new one
+            segments.append(current_segment.strip())
+            current_segment = paragraph
+        else:
+            current_segment = potential_segment
+    
+    # Add the last segment if it's not empty
+    if current_segment:
+        segments.append(current_segment.strip())
+    
+    # Validate segments and split long paragraphs if necessary
+    validated_segments = []
+    
+    for segment in segments:
+        if len(segment) > max_length:
+            # If a segment is too long, split by sentences
+            sentences = split_into_sentences(segment)
+            current_part = ''
+            
+            for sentence in sentences:
+                potential_part = f"{current_part} {sentence}" if current_part else sentence
+                
+                if len(potential_part) > max_length and current_part:
+                    validated_segments.append(current_part.strip())
+                    current_part = sentence
+                else:
+                    current_part = potential_part
+            
+            if current_part:
+                validated_segments.append(current_part.strip())
+        else:
+            validated_segments.append(segment)
+    
+    return validated_segments
+
+def split_into_sentences(text: str) -> list[str]:
+    """
+    Split text into sentences, handling common abbreviations and edge cases.
+    
+    Args:
+        text (str): Text to split into sentences
+        
+    Returns:
+        list[str]: List of sentences
+    """
+    import re
+    
+    # Common abbreviations to avoid splitting on
+    abbreviations = r'Mr\.|Mrs\.|Ms\.|Dr\.|Prof\.|Sr\.|Jr\.|etc\.|vs\.|e\.g\.|i\.e\.'
+    
+    # Split on period-space-capital letter pattern, but not after abbreviations
+    sentence_endings = r'(?<!{})\. +(?=[A-Z])'.format(abbreviations[:-1])
+    
+    # Also split on ! and ? followed by space and capital letter
+    sentences = re.split(f'{sentence_endings}|[!?] +(?=[A-Z])', text)
+    
+    # Clean up sentences
+    return [s.strip() for s in sentences if s.strip()]
+
 def text_to_speech_long(ssml_text, 
                         base_output_file="podcast", 
                         language_code="en-US", 
@@ -100,7 +182,10 @@ def text_to_speech_long(ssml_text,
     Handle long SSML text by splitting it into chunks and processing each separately.
     """
     # Split the SSML into manageable chunks
-    chunks = split_ssml_script(ssml_text)
+    if is_ssml:
+        chunks = split_ssml_script(ssml_text)
+    else:
+        chunks = split_text_into_segments(ssml_text)
     audio_segments = []
     
     # Process each chunk
