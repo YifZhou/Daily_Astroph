@@ -56,7 +56,7 @@ def create_episode_with_dynamic_music(
     music_path,
     output_path="final_episode.mp3",
     intro_music_volume=-15,  # Slightly louder for intro
-    background_music_volume=-25,  # Quieter during speech
+    background_music_volume=-35,  # Quieter during speech
     crossfade_duration=5000  # 3 seconds crossfade
 ):
     """
@@ -123,7 +123,6 @@ if __name__ == "__main__":
         files.sort()
         latest_file = files[-1]
         main_audio_path = f'./voice_output/{latest_file}'
-    main_audio_path = "./voice_output/podcast_script_2025-02-08_combined.mp3"
     music_path = random.choice([
         "./music/Top Of The Morning - TrackTribe.mp3",
         "./music/Cosmos - Silent Partner.mp3",

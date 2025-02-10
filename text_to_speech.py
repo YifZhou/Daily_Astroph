@@ -91,7 +91,11 @@ def split_ssml_script(ssml_text, max_chars=4800):
     
     return segments
 
-def text_to_speech_long(ssml_text, base_output_file="podcast", language_code="en-US", is_ssml=True):
+def text_to_speech_long(ssml_text, 
+                        base_output_file="podcast", 
+                        language_code="en-US", 
+                        voice_name="en-US-Standard-A",
+                        is_ssml=True):
     """
     Handle long SSML text by splitting it into chunks and processing each separately.
     """
@@ -105,7 +109,7 @@ def text_to_speech_long(ssml_text, base_output_file="podcast", language_code="en
         try:
             # Convert chunk to speech
             print(f"Processing chunk {i+1}/{len(chunks)}...")
-            text_to_speech(chunk, output_file, language_code, is_ssml=is_ssml)
+            text_to_speech(chunk, output_file, language_code, voice_name=voice_name, is_ssml=is_ssml)
             audio_segments.append(output_file)
             print(f"Processed chunk {i+1}/{len(chunks)}")
         except Exception as e:

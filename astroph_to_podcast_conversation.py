@@ -159,7 +159,7 @@ Technical Abstract:
         'messages': [
         {'role': 'system', 'content': 'You are a podcast script writer specializing in SSML formatting.'},
         {'role': 'user', 'content': prompt}],
-        'temperature': 1.3}
+        'temperature': 1.0}
     nTry = 0
     while nTry < maxTry:
         try:
@@ -181,7 +181,7 @@ summary = abstract_to_podcast_script(abstractList)
 
 print("podcast script ready")
 # save summary into a text file, file name include current date
-with open(f'./script_output/podcast_script_{date}.txt', 'w') as f:
+with open(f'./script_output/podcast_conversation_{date}.txt', 'w') as f:
     f.write(summary)
 
 """ summary_file = './script_output/podcast_script_2025-02-08.txt'
@@ -191,7 +191,7 @@ with open(summary_file, 'r') as f:
 # convert the summary into speech
 from text_to_speech import text_to_speech_long, combine_audio_files
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./continual-grin-440504-c8-136d2e328d2d.json"
-segments = text_to_speech_long(summary, base_output_file=f'./voice_output/podcast_script_{date}', is_ssml=True)
-combine_audio_files(segments, output_file=f'./voice_output/podcast_script_{date}_combined.mp3')
+segments = text_to_speech_long(summary, base_output_file=f'./voice_output/podcast_conversation_{date}', is_ssml=True)
+combine_audio_files(segments, output_file=f'./voice_output/podcast_conversation_{date}_combined.mp3')
 
 
