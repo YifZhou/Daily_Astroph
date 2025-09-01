@@ -40,8 +40,12 @@ for entry, title_id in zip(entries, titles_ids):
     # Check if 'planet' is in the title or abstract (case-insensitive)
     if ('planet' in title.lower())\
           or ('planet' in abstract.lower())\
+          or ('brown dwarf' in title.lower())\
+          or ('brown dwarf' in abstract.lower())\
               and (not 'planetary nebula' in title.lower())\
-                  and (not 'planetary nebula' in abstract.lower()):
+                  and (not 'planetary nebula' in abstract.lower())\
+                    and (not 'planetary nebulae' in abstract.lower())\
+                        and (not 'planetary nebulae' in title.lower()):
         authors = entry.find('div', class_='list-authors').get_text(strip=True).replace('Authors:', '').strip()
         authorList = authors.split(',')
         if len(authorList) > 3:
