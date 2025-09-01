@@ -103,8 +103,8 @@ def summarize_abstract(papers, maxTry=60):
     payload = {
     'model': 'deepseek-chat',  # Specify the model
     'messages': [
-        {'role': 'system', 'content': 'You are a helpful assistant.'},
-        {'role': 'user', 'content': f'Make a concise summary of the following list of abstracts into a morning report about recent development in exoplanet research. It should be one coherent paragraph. Be concise, light-hearted, and fun. Abstract: {inputContent}'}]}
+        {'role': 'system', 'content': 'You are a helpful assistant who summarizes academic papers in astronomy and astrophysics.'},
+        {'role': 'user', 'content': f'Make a concise summary of the following list of abstracts into a morning report about recent development in astronomy and planetary science research. It should be one coherent paragraph. Be concise, light-hearted, and fun. Abstract: {inputContent}'}]}
     nTry = 0
     while nTry < maxTry:
         try:
